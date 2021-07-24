@@ -17,4 +17,27 @@ for o = 1:10
 end
 
 
+save n_minus_2_results;
+
+
+%% save the results in a file
+cd july_results;
+load n_minus_2_results;
+
+for o = 1:n_sims
+    % type, time, component number
+    fname = sprintf('july_results_%03d.csv',o)
+    f = fopen(fname,'w');
+    fprintf(f,'type (exogenous=0, endogenous=1), time (sec), branch number # %.4f MW lost\n', MW_lost(o));
+    % print the exogenous outages
+    fprintf(f,'0,1.0,%d\n',all_pairs(o,1));
+    fprintf(f,'0,1.0,%d\n',all_pairs(o,2));
+    % print the endogenous outages
+    for i = 1:size(relay_outage{o},1)
+        fprintf(f,'1,%.4f,%d\n',relay_outage{o}(i,1),relay_outage{o}(i,2));
+    end
+    fclose(f);
+end
+cd ..
+
 
